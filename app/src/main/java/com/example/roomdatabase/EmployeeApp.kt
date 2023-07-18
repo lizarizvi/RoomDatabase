@@ -4,6 +4,6 @@ import android.app.Application
 
 class EmployeeApp:Application() {
     val db by lazy {
-        EmployeeDatabase.detInstance(this)
+        EmployeeDatabase.getInstance(this)
     }
 }

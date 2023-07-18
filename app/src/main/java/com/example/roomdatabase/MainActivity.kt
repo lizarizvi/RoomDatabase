@@ -23,20 +23,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun addRecord(employeeDao: EmployeeDao){
+    private fun addRecord(employeeDao: EmployeeDao){
         val name = binding?.etName?.text.toString()
         val email = binding?.etEmail?.text.toString()
 
         if (name.isNotEmpty() && email.isNotEmpty()){
             lifecycleScope.launch{
                 employeeDao.insert(EmployeeEntity(name=name, email=email))
-                Toast.makeText(applicationContext, "Record saved.", Toast.LENGTH_SHORT).show()
+
+                Toast.makeText(applicationContext, "Record saved.", Toast.LENGTH_LONG).show()
+
                 binding?.etName?.text?.clear()
                 binding?.etEmail?.text?.clear()
             }
         }else{
-            Toast.makeText(applicationContext, "Enter name and email", Toast.LENGTH_SHORT).show()
-
+            Toast.makeText(applicationContext, "Enter name and email", Toast.LENGTH_LONG).show()
         }
     }
 }
