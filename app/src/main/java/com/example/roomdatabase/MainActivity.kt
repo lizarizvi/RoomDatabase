@@ -1,5 +1,6 @@
 package com.example.roomdatabase
 
+import android.app.AlertDialog
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun updateRecord(id: Int, employeeDao: EmployeeDao){
+    private fun updateRecord(id: Int, employeeDao: EmployeeDao){
         val updateDialog = Dialog(this, R.style.Theme_AppCompat_Dialog)
         updateDialog.setCancelable(false)
         val binding = DialogUpdateBinding.inflate(layoutInflater)
@@ -92,5 +93,30 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Enter name and email", Toast.LENGTH_LONG).show()
             }
         }
+
+        binding.btnCancel.setOnClickListener {
+            updateDialog.dismiss()
+        }
+        updateDialog.show()
+    }
+
+    private fun deleteRecord(id: Int, employeeDao: EmployeeDao){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Delete Record")
+        builder.setPositiveButton("YES"){
+            dialogInterface,_->
+            lifecycleScope.launch{
+                employeeDao.delete(EmployeeEntity(id))
+                Toast.makeText(applicationContext, "Record deleted.", Toast.LENGTH_LONG).show()
+            }
+            dialogInterface.dismiss()
+        }
+        builder.setNegativeButton("NO"){
+                dialogInterface,_->
+            dialogInterface.dismiss()
+        }
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.setCancelable(false)
+        alertDialog.show()
     }
 }
