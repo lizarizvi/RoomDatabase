@@ -57,9 +57,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpList(employeesList: ArrayList<EmployeeEntity>, employeeDao: EmployeeDao){
         if (employeesList.isNotEmpty()){
-            //val itemAdapter = ItemAdapter(employeesList)
+            val itemAdapter = ItemAdapter(employeesList, {
+                updateId->
+                updateRecord(updateId, employeeDao)
+            },
+                {
+                    deleteId->
+                    deleteRecord(deleteId, employeeDao)
+                })
             binding?.rvItems?.layoutManager = LinearLayoutManager(this)
-            //binding?.rvItems?.adapter = itemAdapter
+            binding?.rvItems?.adapter = itemAdapter
             binding?.rvItems?.visibility = View.VISIBLE
             binding?.tvNoRecords?.visibility = View.GONE
         }else{
