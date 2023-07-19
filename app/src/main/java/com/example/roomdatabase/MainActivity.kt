@@ -2,9 +2,12 @@ package com.example.roomdatabase
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.roomdatabase.databinding.ActivityMainBinding
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +23,13 @@ class MainActivity : AppCompatActivity() {
         val employeeDao = (application as EmployeeApp).db.employeeDao()
         binding?.btnAddRecord?.setOnClickListener {
             addRecord(employeeDao)
+        }
+
+        lifecycleScope.launch{
+            employeeDao.fetchAllEmployees().collect{
+                val list = ArrayList(it)
+                setUpList(list, employeeDao)
+            }
         }
     }
 
@@ -38,6 +48,19 @@ class MainActivity : AppCompatActivity() {
             }
         }else{
             Toast.makeText(applicationContext, "Enter name and email", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun setUpList(employeesList: ArrayList<EmployeeEntity>, employeeDao: EmployeeDao){
+        if (employeesList.isNotEmpty()){
+            val itemAdapter = ItemAdapter(employeesList)
+            binding?.rvItems?.layoutManager = LinearLayoutManager(this)
+            binding?.rvItems?.adapter = itemAdapter
+            binding?.rvItems?.visibility = View.VISIBLE
+            binding?.tvNoRecords?.visibility = View.GONE
+        }else{
+            binding?.rvItems?.visibility = View.GONE
+            binding?.tvNoRecords?.visibility = View.VISIBLE
         }
     }
 }
